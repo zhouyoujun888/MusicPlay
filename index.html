@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./字体图标/iconfont.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 页面所有元素内外边距为0 */
+
+        body {
+            height: 100vh;
+        }
+
+        /* 视口高度为100% */
+
+        .cover {
+            position: absolute;
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: url(http://cloud.hunger-valley.com/17-9-22/87786461.jpg) center center no-repeat;
+            background-size: cover;
+            filter: blur(3px);
+        }
+
+        /* 给这个背景图片设置一个绝对定位，然后清除浮动，设置dispaly为block，图片的宽高为100%，背景图片的url，？ ？ 明天问志哥 不平铺，图片大小：cover高度撑满     filter模糊3px*/
+
+        .musicbox {
+            position: absolute;
+            left: 50%;
+            top: 40%;
+            transform: translate(-50%, -50%);
+            font-family: cursive;
+            font-size: 16px;
+            color: #f06d6a;
+            width: 340px;
+        }
+
+        /* 给这个音乐框设置一个绝对定位，left50% top40%  这个音乐框的宽为340px  在用transform把它的位置进行调整x：-50% y：-50%   字体为狂草  字体大小16px  颜色#f06d6a */
+
+        .music-panel {
+            border: 5px solid #76dba3;
+            padding: 20px 20px 5px 20px;
+            box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1), 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 设置一个边框 给一个内边距  设置一个边框阴影 在设置背景颜色 */
+
+        .musicbox .control {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #ee8a87;
+            float: left;
+        }
+
+        /* 给这一组字体图标设置一个上外边距  字体大小为20px  设置颜色  左浮动*/
+
+        .musicbox .control .iconfont {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        /* 给每一个字体图标设置一个像素为12的右外边距 ， cursor：pointer鼠标样式改成小手   */
+
+        .musicbox .control .iconfont.disable {
+            opacity: 0.3;
+        }
+
+        /* 给字体图标添加一个伪元素  好像是什么禁用？？？ 透明度为0.3   明天问志哥 */
+
+        .music .info {
+            margin-left: 120px;
+        }
+
+        /* 给info设置一个像素为120px的左外边距 */
+
+        .music .info .title {
+            font-size: 18px;
+        }
+
+        /* 把info里面的title字体设置成18px */
+
+        .music .info .auther {
+            font-size: 13px;
+        }
+
+        /*  把info里面的auther字体设置成13px */
+
+        .musicbox .progress {
+            width: 260px;
+        }
+
+        /* 这个进度条的宽为260px */
+
+        .musicbox .progress .bar {
+            height: 3px;
+            margin-top: 5px;
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        /* 进度条的高为3px 上外边距为5px 颜色 鼠标样式pointer */
+
+
+        .musicbox .progress .progress-now {
+            background-color: #ee8a87;
+            height: 3px;
+            width: 0;
+            position: relative;
+        }
+
+        /* 给下面这跟进度条设置一个相对定位  颜色设置 高3px 宽为0 达到覆盖progress-total的效果 后期js会做设定 */
+
+
+        .musicbox .time {
+            text-align: right;
+        }
+
+        /* 时间文本靠最右 */
+
+        .musicbox:after,
+        .musicbox .music:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        /* 清除浮动 */
+
+
+        .musicbox .list {
+            list-style: none;
+        }
+
+        /* 去除无序列表前面的· */
+
+        .musicbox .list>li {
+            position: relative;
+            padding: 4px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-top: none;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* musicbox下的list里面的直接子元素li设置一个相对定位 
+        设置一个内边距上下4px 左右10px
+        设置边框
+        上外边框距离设置为0
+        overflow: hidden;为了让益处的内容隐藏
+        鼠标样式改变*/
+
+        .musicbox .list>li:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 设置一个伪元素 当鼠标放上去时 背景颜色发生改变 */
+
+        .musicbox .list>li.playing:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /*选择list里面的直接子元素li然后添加伪元素  当鼠标按下去松开时进行播放暂停 
+        设置一个绝对定位 清除浮动 设置成行内块级元素 然后设置它的宽高  背景颜色 */
+    </style>
+    <title>音乐播放器</title>
+</head>
+
+<body>
+    <div class="cover"></div>
+    <div class="musicbox">
+        <div class="music-panel">
+            <div class="music">
+                <div class="control">
+                    <span class="back"><i class="iconfont icon-shangyishou"></i></span>
+                    <span class="play"><i class="iconfont icon-zanting "></i></span>
+                    <span class="forward"><i class="iconfont icon-xiayishou"></i></span>
+                </div>
+                <div class="info">
+                    <div class="title">My Song</div>
+                    <div class="auther"> ZhouYouJun</div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="bar">
+                    <div class="progress-total"></div>
+                    <div class="progress-now"></div>
+                </div>
+                <div class="time">0:00</div>
+            </div>
+
+        </div>
+
+
+        <ul class="list">
+            <!-- <li>贰佰-玫瑰</li>
+            <li>IF YOU-ZhouYouJun</li> -->
+        </ul>
+
+    </div>
+
+
+
+
+    <script>
+        //第一步通过ajax获取数据
+        //然后把它们封装成一个函数grtMusicList      callback是一个函数 在里面调用callback
+        var currentIndex = 0
+        var audio = new Audio()
+        audio.autoplay = true   //设置自动播放获取状态
+        var clock
+        var musicList = []
+
+        getMusicList(function (list) {
+            console.log(list)
+            musicList = list
+            // var song = list[0]
+            // var audioObject = new Audio(song.src)
+            // audioObject.play()
+            loadMusic(list[currentIndex])
+            generatelist(list)
+        })
+
+        audio.ontimeupdate = function () {       //当currentTime更新时出发timeupdate这个事件
+            //console.log(this.currentTime)  // this.currentime获取播放时间 
+            $('.musicbox .progress-now').style.width = (this.currentTime / this.duration) * 100 + '%'  //duration音乐的总长度时间
+        }
+        audio.onplay = function () {
+            clock = setInterval(function () {
+                var min = Math.floor(audio.currentTime / 60)
+                var sec = Math.floor(audio.currentTime) % 60 + ''
+                sec = sec.length === 2 ? sec : '0' + sec
+                $('.musicbox .time').innerText = min + ':' + sec
+            }, 1000)     //设置一个定时器好一些
+        }
+
+        audio.onpause = function () {
+            clearInterval(clock)
+        }    //清除定时器
+
+        audio.onended = function () {
+            currentIndex = (musicList.length + (--currentIndex)) % musicList.length
+            console.log(currentIndex)
+            loadMusic(musicList[currentIndex])
+        }
+
+
+        $('.musicbox .play').onclick = function () {
+            // audio.pause()
+            // this.querySelector('.iconfont').classList.remove('icon-zanting')
+            // this.querySelector('.iconfont').classList.add('icon-bofang')
+            //1.给这个一个点击事件  当点击后 实现 音乐停止效果  2.修改里面的字体图标
+            if (audio.paused) {
+                audio.play()
+                this.querySelector('.iconfont').classList.remove('icon-bofang')
+                this.querySelector('.iconfont').classList.add('icon-zanting')
+            } else {
+                audio.pause()
+                this.querySelector('.iconfont').classList.remove('icon-zanting')
+                this.querySelector('.iconfont').classList.add('icon-bofang')
+            }
+        }
+
+        $('.musicbox .forward').onclick = function () {
+            currentIndex = (++currentIndex) % musicList.length
+            console.log(currentIndex)
+            loadMusic(musicList[currentIndex])
+        }
+
+        $('.musicbox .back').onclick = function () {
+            currentIndex = (musicList.length + (--currentIndex)) % musicList.length
+            console.log(currentIndex)
+            loadMusic(musicList[currentIndex])
+        }
+
+        $('.musicbox .bar').onclick = function (e) {
+            console.log(e);
+            var percent = e.offsetX / parseInt(getComputedStyle(this).width)   //选中这个bar的所有的css里面的值 选到width   这里得到数字的百分比
+            console.log(percent);
+            audio.currentTime = audio.duration * percent
+        }
+
+        function $(selector) {
+            return document.querySelector(selector)
+        }
+
+
+        function getMusicList(callback) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET', '/music.json', true)
+            xhr.onload = function () {
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                    // console.log(JSON.parse(this.responseText))
+                    callback(JSON.parse(this.responseText))
+                } else {
+                    console.log('获取数据失败');
+                }
+                xhr.onerror = function () {
+                    console.log('网络异常');
+                }
+
+            }
+            xhr.send()
+        }
+
+        function loadMusic(musicObj) {
+            console.log('形参音乐对象为:', musicObj);
+            $('.musicbox .title').innerText = musicObj.title
+            $('.musicbox .auther').innerText = musicObj.auther
+            $('.cover').style.backgroundImage = 'url(' + musicObj.img + ')'
+            audio.src = musicObj.src
+        }
+
+        function generatelist(list) {
+            $('.musicbox .list')
+
+        }
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
